@@ -14,31 +14,47 @@ source:
     - https://cran.r-project.org/src/contrib/Archive/htmltools/htmltools_{{ version }}.tar.gz
   sha256: 44affb82f9c2fd76c9e2b58f9229adb003217932b68c3fdbf1327c8d74c868a2
 
+
+  # patches:
+   # List any patch files here
+   # - fix.patch
+
 build:
+  # If this is a new build for the same version, increment the build number.
   number: 0
-  skip: true  # [win32]
+
+  # This is required to make R link correctly on Linux.
   rpaths:
     - lib/R/lib/
     - lib/
 
+# Suggests: markdown, testthat
 requirements:
   build:
     - r-base
+    - {{ compiler('c') }}        # [not win]
+    - {{ compiler('cxx') }}      # [not win]
+    - {{native}}toolchain        # [win]
     - r-rcpp
     - r-digest
-    - posix                # [win]
-    - {{native}}toolchain  # [win]
-    - gcc                  # [not win]
 
   run:
     - r-base
+    - {{native}}gcc-libs         # [win]
     - r-rcpp
     - r-digest
 
 test:
   commands:
-    - $R -e "library('htmltools')"  # [not win]
+    # You can put additional test commands to be run here.
+    - $R -e "library('htmltools')"           # [not win]
     - "\"%R%\" -e \"library('htmltools')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
 
 about:
   home: https://github.com/rstudio/htmltools
@@ -50,3 +66,32 @@ extra:
   recipe-maintainers:
     - johanneskoester
     - bgruening
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: htmltools
+# Type: Package
+# Title: Tools for HTML
+# Version: 0.3.6
+# Date: 2017-04-26
+# Author: RStudio, Inc.
+# Maintainer: Joe Cheng <joe@rstudio.com>
+# Description: Tools for HTML generation and output.
+# Depends: R (>= 2.14.1)
+# Imports: utils, digest, Rcpp
+# Suggests: markdown, testthat
+# Enhances: knitr
+# License: GPL (>= 2)
+# URL: https://github.com/rstudio/htmltools
+# BugReports: https://github.com/rstudio/htmltools/issues
+# RoxygenNote: 6.0.1
+# LinkingTo: Rcpp
+# NeedsCompilation: yes
+# Packaged: 2017-04-27 00:04:32 UTC; jcheng
+# Repository: CRAN
+# Date/Publication: 2017-04-28 07:41:46 UTC
+
+# See
+# http://docs.continuum.io/conda/build.html for
+# more information about meta.yaml
